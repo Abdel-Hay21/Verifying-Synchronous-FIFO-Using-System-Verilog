@@ -1,16 +1,6 @@
-
-```markdown
 # Synchronous FIFO Verification Environment — SystemVerilog
 
 > A complete, OOP-based functional verification environment for a Synchronous FIFO design, built with SystemVerilog. Features constrained-random stimulus, a self-checking scoreboard, functional coverage, and SVA assertions.
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Language-SystemVerilog-blue?style=for-the-badge" alt="SystemVerilog"/>
-  <img src="https://img.shields.io/badge/Methodology-UVM%20Style%20OOP-9c27b0?style=for-the-badge" alt="OOP"/>
-  <img src="https://img.shields.io/badge/Coverage-Functional%20%2B%20SVA-00bcd4?style=for-the-badge" alt="Coverage"/>
-  <img src="https://img.shields.io/badge/Tests-10M%20Ops-ff6f00?style=for-the-badge" alt="Tests"/>
-  <img src="https://img.shields.io/badge/Simulator-QuestaSim%20%2F%20ModelSim-4caf50?style=for-the-badge" alt="Simulator"/>
-</p>
 
 ---
 
@@ -24,7 +14,6 @@
 - [Running Simulations](#running-simulations)
 - [Coverage & Reports](#coverage--reports)
 - [Bug Detection](#bug-detection)
-- [License](#license)
 
 ---
 
@@ -111,17 +100,31 @@ A Tcl/DO script for **QuestaSim / ModelSim** that automates the full simulation 
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    TB[tb.sv<br/>Stimulus Generator<br/>Randomize] --> IF[interface.sv]
-    IF --> DUT[FIFO.sv<br/>DUT + SVA]
-    IF --> MON[monitor.sv<br/>Passive Observer]
-    MON -->|fork| SB[FIFO_scoreboard.sv<br/>Golden Model / Auto-Checker]
-    MON -->|join| COV[FIFO_coverage.sv<br/>Functional Coverage]
-    SB -.-> PKG[shared_pkg.sv<br/>Counters & Events]
-    COV -.-> PKG
-    TOP[top.sv<br/>Clock Gen & Wiring] --> IF
-    TOP --> DUT
+```
+                ┌─────────────┐
+                │     tb.sv   │  (Stimulus Generator)
+                │  Randomize  │
+                └──────┬──────┘
+                       │ drives signals
+                ┌──────▼──────────────┐
+                │    interface.sv     │
+                └──────┬──────────────┘
+          ┌────────────┤
+          │            │
+   ┌──────▼──────┐  ┌──▼──────────┐
+   │   FIFO.sv   │  │  monitor.sv │  (Passive Observer)
+   │    (DUT)    │  └──┬──────────┘
+   │  + SVA      │     │ fork...join
+   └─────────────┘  ┌──┴──────────────────────┐
+                    │                          │
+          ┌─────────▼──────────┐   ┌───────────▼──────────┐
+          │ FIFO_scoreboard.sv │   │  FIFO_coverage.sv    │
+          │  (Golden Model /   │   │  (Functional         │
+          │   Auto-Checker)    │   │   Coverage)          │
+          └────────────────────┘   └──────────────────────┘
+                    │
+             shared_pkg.sv
+          (Counters & Events)
 ```
 
 ---
@@ -194,6 +197,3 @@ This project is open for educational and personal use.
 ---
 
 *Built as part of a digital design verification learning project using SystemVerilog best practices.*
-```
-
-عايزني أحطه لك في ملف `.txt` بدل `.md` أو أضيف اسمك ولينك الريبو في الـ badges؟
